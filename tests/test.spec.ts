@@ -3,11 +3,11 @@ import { sendDataToIndexedDB } from "../lib/helpers/indexedDB";
 import { AccountPage } from "../lib/pages/accountPage";
 
 test.describe("Describe Test", () => {
-  test.beforeEach(async ({ page }) => {
-    const accountPage = new AccountPage(page);
-    await accountPage.goto();
-    await sendDataToIndexedDB(page);
-  });
+  // test.beforeEach(async ({ page }) => {
+  //   const accountPage = new AccountPage(page);
+  //   await accountPage.goto();
+  //   await sendDataToIndexedDB(page);
+  // });
 
   test("test", async ({ page }) => {
     const accountPage = new AccountPage(page);

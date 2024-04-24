@@ -1,38 +1,29 @@
 import { test as setup, expect } from "@playwright/test";
 import { generateOTP } from "../lib/helpers/otp";
-import { saveToJSON, fetchDataFromIndexedDB } from "../lib/helpers/indexedDB";
-import { AccountPage } from "../lib/pages/accountPage";
-import { LoginPage } from "../lib/pages/loginPage";
-import { GooglePopUpPage } from "../lib/pages/googlePopUpPage";
+import { HomePage } from "../lib/pages/homePage";
+import { WelcomePage } from "../lib/pages/welcomePage";
+import { GoogleAuthPage } from "../lib/pages/googleAuthPage";
 
 setup("Create Auth", async ({ page, baseURL }) => {
   const email = process.env.GOOGLE_EMAIL;
   const password = process.env.GOOGLE_PASSWORD;
 
-  const loginPage = new LoginPage(page);
-  await loginPage.goto();
+  const welcomePage = new WelcomePage(page);
+  await welcomePage.goto();
 
-  // Google Popup
-  const pagePromise = page.waitForEvent("popup");
-  await loginPage.googleButton.click();
+  await welcomePage.googleButton.click();
 
-  // This allows me to get the popup page
-  const popUp = await pagePromise;
+  const googleAuthPage = new GoogleAuthPage(page);
 
-  // Logging in through Google Popup
-  const googlePopupPage = new GooglePopUpPage(popUp);
-
-  await googlePopupPage.login(email, password);
+  await googleAuthPage.login(email, password);
 
   const twoFACode = generateOTP(process.env.GOOGLE_OTP_SECRET);
-  await googlePopupPage.enterCode(twoFACode);
+  await googleAuthPage.enterCode(twoFACode);
+  await page.getByRole('button', { name: 'Continue' }).click();
 
-  const accountPage = new AccountPage(page);
+  const homePage = new HomePage(page);
 
-  await expect(accountPage.publicLinkBox).toBeVisible();
-  await expect(accountPage.playwrightSolutionsPhoto).toBeVisible();
-
-  // Gets the data from IndexedDB and saves to JSON file
-  const data = await fetchDataFromIndexedDB(page);
-  saveToJSON(data);
+  await expect(homePage.helloSection).toBeVisible();
+  await expect(homePage.iconColleagues).toBeVisible();
+  await expect(homePage.icnMap).toBeVisible();
 });

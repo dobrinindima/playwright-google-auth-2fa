@@ -46,7 +46,7 @@ export default defineConfig({
   reporter: [["html"], ["list"]],
   use: {
     headless: false,
-    baseURL: process.env.BASE_URL || "https://www.tanyaaja.in",
+    baseURL: process.env.BASE_URL || "https://staging.ensuria.net",
     trace: "on",
   },
 });
